@@ -83,16 +83,16 @@ app.post("/signup",(req,res)=>{
     "age" : req.body.age,
     "email": req.body.email,
     "contact": req.body.contact,
-    "enrolledIn": req.body.enrolledIn,
-    "isAdmin": req.body.isAdmin,
-    "deltas": req.body.deltas,
-    "changes": req.body.changes
+    "enrolledIn": [],
+    "isAdmin": 0,
+    "deltas": 0,
+    "changes": []
   }
 
   let confirmation = UserFunctions.registerUser(createdUser);
   console.log("Confirmation : ", confirmation);
 
-  res.redirect()
+  res.redirect("/login");
 })
 
 app.post("/homepage",(req,res)=>{

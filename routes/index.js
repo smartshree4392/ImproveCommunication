@@ -1,5 +1,3 @@
-const tasksRoutes = require("./tasks");
-
 const constructorMethod = app => {
   
     app.use("*", (req, res) => {

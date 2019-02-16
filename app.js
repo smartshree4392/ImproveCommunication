@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const exphbs = require("express-handlebars");
+const bcrypt = require("bcrypt");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
@@ -14,16 +15,55 @@ app.listen(3000, () => {
 
 //============================= ROUTES ============================//
 
+/*To Do:
+1. Create Middleware
+2. post /login 
+*/
+
+
+
 app.get("/",(req,res)=>{
   res.send("This is the homepage");
 })
 
 app.get("/login",(req,res)=>{
-  res.send("This is the login page");
+  res.send("Login form will be served Here. \nForm Will have 2 buttons -> Login,Signup");
 })
 
-app.post("/login",(req,res)=>{
+app.post("/login",async(req,res)=>{
+  console.log("username : ",req.body.username);
+  console.log("password: ",req.body.password);
   
+	let hashedPass ; 
+	let userId ;
+	
+	const usersFromDB = await UserFunctions.getAllUsers();
+
+	for(let i=0; i<usersFromDB.length; i++)
+		{
+			if(req.body.username==usersFromDB[i].username)
+				{
+					hashedPass = usersFromDB[i].hashedPassword;
+					userId = usersFromDB[i]._id;
+				}
+		}
+	
+	let comparedVal = await bcrypt.compare(req.body.password, hashedPass);
+
+	if(comparedVal)
+			{
+				res.cookie("AuthCookie", userId);
+				//res.render(__dirname + "/data", {"nameOfTheCourse":nameOfTheCourse, "lastName":lastName, "bio": bio, "profession": profession});
+				res.redirect("/homepage");
+			}
+	else
+			{
+				let hasErrors = true;
+				let errors = [];
+				errors.push("username/password does not match");
+				res.status(403).render(__dirname + "/login", {"hasErrors":hasErrors, "errors":errors});
+				return;
+			}
 })
 
 app.get("/signup",(req,res)=>{

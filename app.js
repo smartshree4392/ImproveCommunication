@@ -5,6 +5,7 @@ const exphbs = require("express-handlebars");
 const bcrypt = require("bcrypt");
 const uuid = require("uuid");
 const cookieParser = require("cookie-parser");
+const UserFunctions = require("./UserFunctions");
 
 
 app.use(bodyParser.json());
@@ -78,6 +79,7 @@ app.post("/signup",(req,res)=>{
   let createdUser = {
     "_id": uuid.v4(),
     "name" : req.body.name,
+    "password": req.body.password,
     "age" : req.body.age,
     "email": req.body.email,
     "contact": req.body.contact,
@@ -87,7 +89,10 @@ app.post("/signup",(req,res)=>{
     "changes": req.body.changes
   }
 
+  let confirmation = UserFunctions.registerUser(createdUser);
+  console.log("Confirmation : ", confirmation);
 
+  res.redirect()
 })
 
 app.post("/homepage",(req,res)=>{
